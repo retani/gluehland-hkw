@@ -1,0 +1,48 @@
+<html>
+
+  <head>
+    <style>
+      ol {
+        list-style-type: none;
+      }
+      body,ol,li {
+        margin:0;
+        padding:0;
+      }
+      li iframe {
+        width:49vw;
+        height:50vh;
+        float:left;
+      }
+    </style>
+  </head>
+
+  <body>
+
+  <ol>
+    <li><iframe id="snapshot" src="samples-server/s/webrtc-capturestill/index.html">snapshot</iframe></li>
+    <li><iframe id="detect" src="tracking.js/examples/face_hello_world.html">detect</iframe></li>
+    <li><iframe id="annotate" src="clmtools/annotater/main.html">annotate</iframe></li>
+    <li><iframe id="substitute" src="clmtrackr/examples/facesubstitution.html">substitute</iframe></li>
+  </ol>
+
+  <script>
+    window.addEventListener("message", function(msg) {
+
+      if (msg.data.sender == "snapshot") {
+        console.log("received snapshot, " + msg.data.dataURL.length + " bytes")
+        document.getElementById("detect").contentWindow.postMessage(msg.data, "*") // forward to detect
+        document.getElementById("annotate").contentWindow.postMessage(msg.data, "*") // forward to annotate
+      }
+
+      if (msg.data.sender == "annotate") {
+        console.log("received coords, " + msg.data.coords.length + " bytes")
+        console.log(msg.data.coords)
+        document.getElementById("substitute").contentWindow.postMessage(msg.data, "*") // forward to substitute
+      }
+
+    }, false);
+  </script>
+  
+  </body>
+</html>
