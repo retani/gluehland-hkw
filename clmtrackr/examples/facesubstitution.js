@@ -130,6 +130,12 @@ function poisson() {
   }
 }
 
+function updateCurrentMask() {
+  if (positions) {
+    switchMasks(positions);
+  }
+}
+
 var fd = new faceDeformer();
 fd.init(document.getElementById('webgl'));
 var wc1 = document.getElementById('webgl').getContext('webgl') || document.getElementById('webgl').getContext('experimental-webgl')
@@ -184,11 +190,19 @@ for (var i = 0;i < images.length;i++) {
     var elementId = obj.target.id;
 
     // copy the images to canvases
-    imagecanvas = document.createElement('CANVAS');
+    if (imageCanvases[elementId] == undefined) {
+      imagecanvas = document.createElement('CANVAS');
+    }
+    else {
+      var updated = true
+      imagecanvas = imageCanvases[elementId]
+    }
     imagecanvas.width = obj.target.width;
     imagecanvas.height = obj.target.height;
     imagecanvas.getContext('2d').drawImage(obj.target,0,0);
     imageCanvases[elementId] = imagecanvas;
+
+    if (updated) updateCurrentMask()
 
     console.log("added " + elementId + " to canvases ")
   });
@@ -264,7 +278,7 @@ function drawGridLoop() {
   }
   // check whether mask has converged
   var pn = ctrack.getConvergence();
-  console.log(pn)
+  //console.log(pn)
   if (pn < 0.4) {
     switchMasks(positions);
   } else {
@@ -359,16 +373,17 @@ function createMasking(canvas, modelpoints) {
   cc.fill();
 }
 
-
-window.addEventListener("message", function(msg) {
-
-  if (msg.data.sender == "annotate") {
-    console.log("substitute received coords, " + msg.data.coords.length + " bytes")
-    masks["grab"]=msg.data.coords
-    document.getElementById("grab").src=msg.data.dataURL
+window.addEventListener('storage', function(e) {  
+  console.log("substitute storage event")
+  if (e.key == "gluehland-coords") {
+    console.log("substitute received coords")
+    masks["grab"]=eval(e.newValue)
+    var dataURL = localStorage.getItem("gluehland-dataURL")
+    console.log(dataURL)
+    document.getElementById("grab").src = dataURL
+    localStorage.setItem("gluehland-progress", "done");
   }
-
-}, false);
+});
 
 
 /*********** Code for stats **********/

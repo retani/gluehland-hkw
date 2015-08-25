@@ -103,11 +103,27 @@
     
       var data = canvas.toDataURL('image/png');
       photo.setAttribute('src', data);
-      parent.postMessage({sender:"snapshot",dataURL:data},"*");
+
+      console.log("took picture")
+
+      if (localStorage.getItem("gluehland-progress") == "updating") {
+        console.log("there is still an update in progress. not sending new picture.")
+      }
+      else {
+        localStorage.setItem("gluehland-dataURL", data);
+        localStorage.setItem("gluehland-progress", "updating");        
+      }
+    
     } else {
       clearphoto();
     }
   }
+
+  localStorage.setItem("gluehland-progress","init")
+
+  setInterval(function(){
+    takepicture()
+  },7000)
 
   // Set up our event listener to run the startup process
   // once loading is complete.

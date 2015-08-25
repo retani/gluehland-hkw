@@ -492,6 +492,7 @@ takeSnapshot = function(dataURL) { // HH my function to take image from dataURL 
 						positions = estimatePositions();
 						if (!positions) {
 							clear()
+							localStorage.setItem("gluehland-progress", "no face");
 							return false;
 						}
 						// put boundary on estimated points
@@ -516,7 +517,9 @@ takeSnapshot = function(dataURL) { // HH my function to take image from dataURL 
 
 						// send 
 						var coords = exportToString()
-						parent.postMessage({sender:"annotate",dataURL:dataURL,coords:coords},"*")
+
+						localStorage.setItem("gluehland-coords", coords);
+						console.log("annotator sent coords")
 
 					} else {
 						clear();
@@ -526,12 +529,12 @@ takeSnapshot = function(dataURL) { // HH my function to take image from dataURL 
 				img.src = dataURL;
 }
 
-window.addEventListener("message", function(msg) {
-  if (msg.data.sender == "snapshot") {
-    console.log("received snapshot, " + msg.data.dataURL.length + " bytes")
-    takeSnapshot(msg.data.dataURL)
+window.addEventListener('storage', function(e) {  
+  if (e.key == "gluehland-dataURL") {
+  	console.log("annotator received dataURL")
+  	takeSnapshot(e.newValue)
   }
-}, false);
+});
 
 //document.getElementById('camera').addEventListener('click', takeSnapshot, false);
 
