@@ -33,6 +33,8 @@
 				<input class="btn" type="button" value="wait, loading video & images" disabled="disabled" onclick="startVideo()" id="startbutton"></input>
 				<input class="btn" type="button" value="pause" onclick="stopVideo()" id="stopbutton"></input>
 				<input class="btn" type="button" value="poisson" onclick="poisson()" id="poissonbutton"></input>
+				<br>
+				<input class="btn" type="button" value="auto" onclick="startAutoVideo()" id="autobutton"></input>
 				<select name="mask" id="selectmask">
 					<option value="0">Average face</option>
 					<option value="1">Terminator</option>
@@ -58,11 +60,16 @@
 			<div id="text">
 				<a onclick="insertAltVideo(vid, 'baron.webm');">Baron</a>
 				<a onclick="insertAltVideo(vid, 'baron.1.webm');">Baron.1</a><br>
-				<a onclick="insertAltVideo(vid, 'schafe.webm');">Schafe</a><br>
-				<a onclick="insertAltVideo(vid, 'pegida.webm');">Pegida</a><br>
-				<a onclick="insertAltVideo(vid, 'mashup.webm');">Mashup</a><br>
+				<a onclick="insertAltVideo(vid, 'schafe.webm');">Schafe</a>
+				<a onclick="insertAltVideo(vid, 'schafe.1.mp4');">Schafe.1</a><br>
+				<a onclick="insertAltVideo(vid, 'pegida.webm');">Pegida</a>
+				<a onclick="insertAltVideo(vid, 'pegida.1.webm');">Pegida.1</a><br>
+				<a onclick="insertAltVideo(vid, 'mashup.webm');">Mashup</a>
+				<a onclick="insertAltVideo(vid, 'mashup.1.webm');">Mashup.1</a>
+				<a onclick="insertAltVideo(vid, 'mashup.2.webm');">Mashup.2</a><br>
 				<a onclick="insertAltVideo(vid, 'ingo.webm');">Ingo</a><br>
-				<a onclick="insertAltVideo(vid, 'freiheit.webm');">Freiheit</a><br>
+				<a onclick="insertAltVideo(vid, 'freiheit.webm');">Freiheit</a>
+				<a onclick="insertAltVideo(vid, 'freiheit.1.webm');">Freiheit.1</a><br>
 			</div>
 			<canvas id="webgl2" width="400" height="300"></canvas>
 			<img id="average" class="masks" src="./media/average2_crop.jpg"></img>

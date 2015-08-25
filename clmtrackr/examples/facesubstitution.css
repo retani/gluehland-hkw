@@ -28,6 +28,9 @@
         -ms-filter : fliph; /*IE*/
         filter : fliph; /*IE*/
 
+        image-fit: fill;
+        object-fit: fill;
+
         width : 600px;
         height : 450px;
       }

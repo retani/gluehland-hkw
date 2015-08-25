@@ -21,6 +21,7 @@ function enablestart() {
 $(window).load(function() {
     imagesReady = true;
     enablestart();
+    startAutoVideo()
 });
 
 var insertAltVideo = function(video, name, dataURL) {
@@ -60,6 +61,8 @@ if (webGLContext == null) {
 navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
 window.URL = window.URL || window.webkitURL || window.msURL || window.mozURL;
 
+// HH disabled camera
+/*
 // check for camerasupport
 if (navigator.getUserMedia) {
   // set up stream
@@ -79,7 +82,7 @@ if (navigator.getUserMedia) {
     } else {
       vid.src = (window.URL && window.URL.createObjectURL(stream)) || stream;
     }
-    vid.play();
+    vid.play(); 
   }, function() {
     insertAltVideo(vid);
     console.log("There was some problem trying to fetch video from your webcam, using a fallback video instead.");
@@ -88,6 +91,7 @@ if (navigator.getUserMedia) {
   insertAltVideo(vid);
   console.log("Your browser does not seem to support getUserMedia, using a fallback video instead.");
 }
+*/
 
 vid.addEventListener('canplay', function() {videoReady = true;enablestart();}, false);
 
@@ -116,6 +120,31 @@ function startVideo() {
   ctrack.start(vid);
   // start drawing face grid
   drawGridLoop();
+}
+
+playlist = ["baron.1.webm","pegida.1.webm","schafe.1.mp4","mashup.1.webm","freiheit.1.webm","mashup.2.webm"]
+playlist_pointer = 0
+
+function startAutoVideo() {
+  console.log("start auto")
+  autoNext()
+  startVideo()
+  
+  /*
+  setTimeout(function() {$('#selectmask').val(18).trigger("change");}, 6000)
+  setTimeout(function() {updateMask()}, 8000)
+  */
+
+  vid.addEventListener('ended', function (v) {
+    autoNext()
+    vid.play()
+  })
+}
+
+function autoNext() {
+  insertAltVideo(vid, playlist[playlist_pointer])
+  playlist_pointer++
+  if (playlist_pointer >= playlist.length) playlist_pointer = 0
 }
 
 
@@ -279,7 +308,7 @@ function drawGridLoop() {
   // check whether mask has converged
   var pn = ctrack.getConvergence();
   //console.log(pn)
-  if (pn < 0.4) {
+  if (pn < 45) {
     switchMasks(positions);
   } else {
     requestAnimFrame(drawGridLoop);
@@ -321,13 +350,6 @@ function switchMasks(pos) {
   tempcoords.push(positions[20]);
   tempcoords.push(positions[19]);
   createMasking(maskcanvas, tempcoords);
-
-  /*document.body.appendChild(newcanvas);
-  document.body.appendChild(videocanvas);
-  document.body.appendChild(maskcanvas);
-  debugger;*/
-
-  // do poisson blending
   Poisson.load(newcanvas, videocanvas, maskcanvas, function() {
     var result = Poisson.blend(30, 0, 0);
     // render to canvas
@@ -336,6 +358,13 @@ function switchMasks(pos) {
 
     var maskname = Object.keys(masks)[currentMask];
     fd.load(newcanvas, pos, pModel);
+
+  /*document.body.appendChild(newcanvas);
+  document.body.appendChild(videocanvas);
+  document.body.appendChild(maskcanvas);
+  debugger;*/
+
+  // do poisson blending
     requestAnimFrame(drawMaskLoop);
   });  
 
