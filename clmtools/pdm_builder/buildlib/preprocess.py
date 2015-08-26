@@ -53,6 +53,7 @@ def preprocess(coordfiles, mirror=True, useNotVisiblePoints=True, crop=True):
 		mirrors = []
 		for c in range(0, len(coordinates)):
 			# load image
+			print "Loading " + filenames[c]
 			im = Image.open(config.images+filenames[c], "r")
 			# get imagesize
 			imsize = im.size
