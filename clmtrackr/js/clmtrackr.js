@@ -57,7 +57,7 @@ var clm = {
 		//var varianceSeq = [6,3,0.75];
 		var PDMVariance = 0.7;
 		
-		var relaxation = 0.1;
+		var relaxation = 0.01;
 		
 		var first = true;
 		

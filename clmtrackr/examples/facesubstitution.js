@@ -100,7 +100,7 @@ vid.addEventListener('canplay', function() {videoReady = true;enablestart();}, f
 var animationRequest;
 var positions;
 
-var ctrack = new clm.tracker();
+var ctrack = new clm.tracker(/*{searchWindow: 15, scoreThreshold: 0.3}*/);
 ctrack.init(pModel);
 
 document.getElementById('selectmask').addEventListener('change', updateMask, false);
@@ -122,7 +122,7 @@ function startVideo() {
   drawGridLoop();
 }
 
-playlist = ["baron.1.webm","pegida.1.webm","schafe.1.mp4","mashup.1.webm","freiheit.1.webm","mashup.2.webm"]
+playlist = ["slideshow720.mp4"]//["baron.1.webm","pegida.1.webm","schafe.1.mp4","mashup.1.webm","freiheit.1.webm","mashup.2.webm"]
 playlist_pointer = 0
 
 function startAutoVideo() {
@@ -308,7 +308,7 @@ function drawGridLoop() {
   // check whether mask has converged
   var pn = ctrack.getConvergence();
   //console.log(pn)
-  if (pn < 45) {
+  if (pn < 0.5) {
     switchMasks(positions);
   } else {
     requestAnimFrame(drawGridLoop);
@@ -337,8 +337,7 @@ function switchMasks(pos) {
   var newVertices = pModel.path.vertices.concat(extended_vertices);
 
   // deform the mask we want to use to face form
-  console.log(imageCanvases) // HH can be emtpy - problem       
-
+ 
   fd2.load(imageCanvases[images[currentMask]], newMaskPos, pModel, newVertices);
   fd2.draw(newFacePos);
   // and copy onto new canvas
