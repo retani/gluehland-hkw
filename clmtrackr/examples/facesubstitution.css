@@ -2,45 +2,87 @@
 
 body {
   font-family: 'Lato';
-  background-color: #f0f0f0;
+  background-color: black;
   margin: 0px auto;
   /*max-width: 1150px;*/
 }
 
 body.init {
-  background-color: black;
+  background-color: red;
 }
 
-#overlay, #webgl {
+body.init #grab-overlay{
+  display: none;
+}
+
+/** prod values ***/
+
+body.init #annotationcontainer,
+body.init #container {
+  display:none;
+}
+
+body.grab #annotationcontainer,
+body.grab #container {
+  display:none;
+}
+
+body.intro #grabinterface,
+body.intro #container {
+  display:none;
+}
+
+body.play #grabinterface,
+body.play #annotationcontainer {
+  display:none;
+}
+
+#controls, #text {
+  display:none;
+}
+
+/** end prod values ***/
+
+#overlay, #webgl, #visiblevideo, #videoel {
   position: absolute;
   top: 0px;
   left: 0px;
-
-
-  width : 600px;
-  height : 450px;
+  width : 1280px;
+  height : 720px;
+  image-fit: fill;
+  object-fit: fill;  
 }
 
 #videoel {
-  image-fit: fill;
-  object-fit: fill;
+  display:none;
+}
 
-  width : 600px;
-  height : 450px;
+#webgl {
+  z-index:40;
+}
+
+#overlay {
+  display: none;
+}
+
+#visiblevideo {
+  z-index:30;
 }
 
 #container {
   position : relative;
-  width : 370px;
+  height:720px;
 }
 
+/*
 #content {
   margin-top : 50px;
   margin-left : auto;
   margin-right : auto;
   max-width: 600px;
 }
- 
+ */
+
 #sketch {
   display: none;
 }
@@ -66,14 +108,88 @@ h2 {
   text-align : center;
 }
 
+/*** GRAB ***/
+
+#grabinterface, #grabinterface #snapshot, #grabinterface #headrect, #camera {
+  width:1280px;
+  height:720px;
+  image-fit: fill;
+  object-fit: fill;  
+}
+
+#grabinterface {
+  position: relative;
+  overflow:hidden;
+
+}
+
+#grabinterface #snapshot {
+  position: absolute;
+  z-index: 10;
+  top:0;
+  left:0; 
+}
+
+#grabinterface #headrect {
+  position: absolute;
+  z-index: 20;
+  top:0;
+  left:0;
+}
+
+#camera {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index:30;
+}
+
+#grab-overlay {
+  position: absolute;
+  z-index: 40;
+  top: 13%;
+  left: 30%;
+  text-align: center;
+  animation: blink 2s step-end infinite;
+  margin: auto;
+  width: 42%;
+}
+/*** init ***/
+
+#initinterface {
+  display: none;
+}
+
+body.init #initinterface {
+  display: block;
+}
+
+#initbutton {
+  color:red;
+  display: block;
+  margin:1em auto 2em auto;
+}
+
+/*** annotate ***/
+
 #annotationcontainer {
   position:relative;
+  width:1280px;
+  height:720px;
+  image-fit: fill;
+  object-fit: fill;    
+}
+
+#annotationcontainer svg,
+#annotationcontainer canvas {
+  transform:translateX(500px) translateY(50%) scale(2);
 }
 
 #vis {
   position:absolute;
   left:0;
   top:0;
+  z-index:40;
 }
 
 #vis .controltext {
@@ -107,40 +223,15 @@ h2 {
 }
 */
 
+/*
 #annotationcontainer {
   transform: scale(1.2) translateX(33px);
 }
+*/
 
-#grabinterface {
-  position: relative;
-  overflow:hidden;
-  width:320px;  
-  height:240px;
-}
+/*** keyframes ***/
 
-#grabinterface #snapshot {
-  position: absolute;
-  z-index: 10;
-  top:0;
-  left:0;
-  width:320px;  
-  height:240px;  
-}
-
-#grabinterface #headrect {
-  position: absolute;
-  z-index: 20;
-  top:0;
-  left:0;
-  width:100%;
-  width:320px;  
-  height:240px;  
-}
-
-#initinterface {
-  display: none;
-}
-
-body.init #initinterface {
-  display: block;
+@keyframes blink {
+  0% {visibility: visible}
+  75% {visibility: hidden}
 }

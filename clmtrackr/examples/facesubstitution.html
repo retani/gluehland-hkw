@@ -77,36 +77,33 @@
   <script src="../../clmtools/annotater/main.js"></script>
 
   	<p id="initinterface">
-  		<input class="btn" type="button" value="start" onclick="setMode('grab')" id="initbutton"></input>
+  		<input class="btn" type="button" value="If you see live video below, click here to start" onclick="setMode('grab')" id="initbutton"></input>
   	</p>
 
 		<div id="content">
 
-			<h2>CAMERA</h2>
-			<video id="camera" width="400" height="300" preload="auto"></video>
-
-			<h2>GRAB</h2>
 			<div id="grabinterface">
+				<video id="camera" width="400" height="300" preload="auto"></video>s
 				<canvas id="snapshot" width="400" height="300"></canvas>
 				<canvas id="headrect" width="400" height="300"></canvas>
+				<img id="grab-overlay" src="../media2/facemodel.png">
 			</div>
 		  
-		  <h2>ANNOTATE</h2>
 		  <div id="annotationcontainer">
 			  <div id="vis">
 			  </div>
 			  <span id="imageholder">
-			  	<canvas id="imgcanvas"></canvas>
+			  	<canvas id="imgcanvas" width="400" height="300" ></canvas>
 			  </span>
 		  </div>						
 			
-			<h2>PLAY</h2>
 			<div id="container">
 				<video id="videoel" width="400" height="300" preload="auto"  src="../media2/slideshow720_faces.webm"></video>
 				<canvas id="overlay" width="400" height="300"></canvas>
 				<canvas id="webgl" width="400" height="300"></canvas>	
+				<video id="visiblevideo" width="400" height="300" preload="auto"  src="../media2/slideshow720.webm"></video>
 			</div>
-			<video id="visiblevideo" width="400" height="300" preload="auto"  src="../media2/slideshow720.webm"></video>
+			
 
 			<br/>
 			<div id="controls">

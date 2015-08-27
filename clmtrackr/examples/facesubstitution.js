@@ -39,7 +39,7 @@ setMode = function(newmode) {
   // intro
 
   if (newmode=="intro") {
-    setTimeout(function() {setMode("play")}, 2000)
+    setTimeout(function() {setMode("play")}, 3000)
   }  
 
   // play
@@ -176,7 +176,9 @@ function startVideo() {
   visiblevid.play();
   // start tracking
   ctrack.start(vid);
-  setTimeout(function() {updateCurrentMask()}, 3000)
+  setTimeout(function() {updateMask()}, 8000)
+  setTimeout(function() {updateCurrentMask()}, 9000)
+  //setTimeout(function() {updateCurrentMask()}, 3000)
   // start drawing face grid
   drawGridLoop();
 }
@@ -211,6 +213,7 @@ function autoNext() {
 
 function stopVideo() {
   // stop video
+  //ctrack.stop();
   vid.pause();
   visiblevid.pause()
   vid.load();
@@ -368,11 +371,14 @@ function drawGridLoop() {
   if (positions) {
     // draw current grid
     ctrack.draw(overlay);
+    //poisson()
   }
+
   // check whether mask has converged
   var pn = ctrack.getConvergence();
+    //console.log("convergence value " + pn)
   //console.log(pn)
-  if (pn < 500) {
+  if (pn < 0.5) {
     console.log("converged with " + pn)
     switchMasks(positions);
   } else {
@@ -449,7 +455,7 @@ function drawMaskLoop() {
     // draw mask on top of face
     fd.draw(positions);
   }
-  animationRequest = requestAnimFrame(drawMaskLoop);
+  if (mode=="play") animationRequest = requestAnimFrame(drawMaskLoop);
 }
 
 function createMasking(canvas, modelpoints) {
@@ -476,7 +482,7 @@ window.addEventListener('storage', function(e) {
     localStorage.setItem("gluehland-progress", "done");
   }
 });
-
+ 
 changeImageAndCoords = function(dataURL, coords) {
   masks["grab"]=eval(coords)
   document.getElementById("grab").src = dataURL
@@ -516,7 +522,7 @@ window.addEventListener("facetrackingEvent", function(e) {
   console.log("confidence: " + e.confidence)
 
   //if (e.width > w/5 && e.height > h/2) {
-  if (e.x > (w/2-w/4) && e.x > (w/2+w/4) && e.y > (h/2-h/4) && e.y > (h/2+h/4)) {
+  if (e.x > (w/2-w/4) && e.x > (w/2+w/4) && e.y > (h/2-h/4) && e.y > (h/2+h/4) &&!snapshotting) {
     takepicture()
   }
 })
