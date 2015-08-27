@@ -1,73 +1,146 @@
-      @import url(https://fonts.googleapis.com/css?family=Lato:300italic,700italic,300,700);
+@import url(https://fonts.googleapis.com/css?family=Lato:300italic,700italic,300,700);
 
-      body {
-        font-family: 'Lato';
-        background-color: #f0f0f0;
-        margin: 0px auto;
-        /*max-width: 1150px;*/
-      }
-      
-      #overlay, #webgl {
-        position: absolute;
-        top: 0px;
-        left: 0px;
-        -o-transform : scaleX(-1);
-        -webkit-transform : scaleX(-1);
-        transform : scaleX(-1);
-        -ms-filter : fliph; /*IE*/
-        filter : fliph; /*IE*/
+body {
+  font-family: 'Lato';
+  background-color: #f0f0f0;
+  margin: 0px auto;
+  /*max-width: 1150px;*/
+}
 
-        width : 600px;
-        height : 450px;
-      }
+body.init {
+  background-color: black;
+}
 
-      #videoel {
-        -o-transform : scaleX(-1);
-        -webkit-transform : scaleX(-1);
-        transform : scaleX(-1);
-        -ms-filter : fliph; /*IE*/
-        filter : fliph; /*IE*/
+#overlay, #webgl {
+  position: absolute;
+  top: 0px;
+  left: 0px;
 
-        image-fit: fill;
-        object-fit: fill;
 
-        width : 600px;
-        height : 450px;
-      }
+  width : 600px;
+  height : 450px;
+}
 
-      #container {
-        position : relative;
-        width : 370px;
-      }
-      
-      #content {
-        margin-top : 50px;
-        margin-left : auto;
-        margin-right : auto;
-        max-width: 600px;
-      }
-       
-      #sketch {
-        display: none;
-      }
+#videoel {
+  image-fit: fill;
+  object-fit: fill;
 
-      h2 {
-        font-weight : 400;
-      }
+  width : 600px;
+  height : 450px;
+}
 
-      .masks {
-        display: none;
-      }
-      
-      .btn {
-        font-family: 'Lato';
-        font-size: 16px;
-      }
+#container {
+  position : relative;
+  width : 370px;
+}
 
-      #webgl2 {
-        display : none;
-      }
+#content {
+  margin-top : 50px;
+  margin-left : auto;
+  margin-right : auto;
+  max-width: 600px;
+}
+ 
+#sketch {
+  display: none;
+}
 
-      #controls {
-        text-align : center;
-      }
+h2 {
+  font-weight : 400;
+}
+
+.masks {
+  display: none;
+}
+
+.btn {
+  font-family: 'Lato';
+  font-size: 16px;
+}
+
+#webgl2 {
+  display : none;
+}
+
+#controls {
+  text-align : center;
+}
+
+#annotationcontainer {
+  position:relative;
+}
+
+#vis {
+  position:absolute;
+  left:0;
+  top:0;
+}
+
+#vis .controltext {
+  display: none;
+}
+
+
+#vis circle:nth-child(3n) {
+  fill:black;
+}
+
+#vis circle:nth-child(3n+1) {
+  fill:red;
+}
+
+#vis circle:nth-child(3n+2) {
+  fill:yellow;
+}
+
+/*
+#vis circle:nth-child(n) {
+  fill:black;
+}
+
+#vis circle:nth-child(n+20) {
+  fill:red;
+}
+
+#vis circle:nth-child(n+40) {
+  fill:yellow;
+}
+*/
+
+#annotationcontainer {
+  transform: scale(1.2) translateX(33px);
+}
+
+#grabinterface {
+  position: relative;
+  overflow:hidden;
+  width:320px;  
+  height:240px;
+}
+
+#grabinterface #snapshot {
+  position: absolute;
+  z-index: 10;
+  top:0;
+  left:0;
+  width:320px;  
+  height:240px;  
+}
+
+#grabinterface #headrect {
+  position: absolute;
+  z-index: 20;
+  top:0;
+  left:0;
+  width:100%;
+  width:320px;  
+  height:240px;  
+}
+
+#initinterface {
+  display: none;
+}
+
+body.init #initinterface {
+  display: block;
+}

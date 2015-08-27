@@ -11,32 +11,111 @@
 		</script>
 	</head>
 	<body>
+
+  <!--script src="../../clmtools/annotater/js/jquery.min.js"></script>
+  <script src="../../clmtools/annotater/js/jquery.imgareaselect.pack.js"></script-->
+  <script src="../../clmtools/annotater/js/d3.v3.min.js"></script>
+  <!--script src="../../clmtools/annotater/js/json2.js"></script>
+  <script src="../../clmtools/annotater/js/BlobBuilder.min.js"></script>
+  <script src="../../clmtools/annotater/js/Filesaver.min.js"></script>
+  
+  <script src="../../clmtools/annotater/js/utils.js"></script>
+  <script src="../../clmtools/annotater/js/clmtrackr.js"></script>
+  <script src="../../clmtools/annotater/js/model_pca_20_svm.js"></script-->
+
 		<script src="../js/dat.gui.min.js"></script>
 		<script src="../js/utils.js"></script>
 		<script src="../js/clmtrackr.js"></script>
-		<script src="../models/model_pca_20_mosse.js"></script>
+		<script src="../models/model_pca_20_svm.js"></script>
 		<script src="../js/Stats.js"></script>
 		<script src="../js/face_deformer.js"></script>
 		<script src="../js/jquery.min.js"></script>
 		<script src="./js/poisson_new.js"></script>
-		
+		<script src="snapshot.js"></script>
+
+		<script src="../../headtrackr/js/headtrackr.js"></script>
+	<!--script src="../../samples-server/s/webrtc-capturestill/capture.js"></script-->
+
+<!--div class="contentarea">
+	<h1>
+		MDN - WebRTC: Still photo capture demo
+	</h1>
+	<p>
+		This example demonstrates how to set up a media stream using your built-in webcam, fetch an image from that stream, and create a PNG using that image.
+	</p>
+  <div class="camera">
+    <video id="video">Video stream not available.</video>
+    <button id="startbutton">Take photo</button> 
+  </div>
+  <canvas id="canvas">
+  </canvas>
+  <div class="output">
+    <img id="photo" alt="The screen capture will appear in this box."> 
+  </div>
+	<p>
+		Visit our article <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API/Taking_still_photos"> Taking still photos with WebRTC</a> to learn more about the technologies used here.
+	</p>
+</div-->
+
+
+  <canvas id="sketch" width="138" height="138"></canvas>
+
+
+  <script> 
+    var paths = [
+      [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14],
+      [15,16,17,18],
+      [19,20,21,22],
+      [23,63,24,64,25,65,26,66,23],
+      [28,67,29,68,30,69,31,70,28],
+      [34,35,36,42,37,43,38,39,40],
+      [33,41,62],
+      [44,45,46,47,48,49,50,51,52,53,54,55,44,56,57,58,50,59,60,61,44]
+    ];
+    
+  </script>
+  <script src="../../clmtools/annotater/main.js"></script>
+
+  	<p id="initinterface">
+  		<input class="btn" type="button" value="start" onclick="setMode('grab')" id="initbutton"></input>
+  	</p>
+
 		<div id="content">
-			<h2>Face substitution</h2>
-			<div id="container">
-				<video id="videoel" width="400" height="300" preload="auto"  src="../media2/baron.webm">
-				</video>
-				<canvas id="overlay" width="400" height="300"></canvas>
-				<canvas id="webgl" width="400" height="300"></canvas>
+
+			<h2>CAMERA</h2>
+			<video id="camera" width="400" height="300" preload="auto"></video>
+
+			<h2>GRAB</h2>
+			<div id="grabinterface">
+				<canvas id="snapshot" width="400" height="300"></canvas>
+				<canvas id="headrect" width="400" height="300"></canvas>
 			</div>
+		  
+		  <h2>ANNOTATE</h2>
+		  <div id="annotationcontainer">
+			  <div id="vis">
+			  </div>
+			  <span id="imageholder">
+			  	<canvas id="imgcanvas"></canvas>
+			  </span>
+		  </div>						
+			
+			<h2>PLAY</h2>
+			<div id="container">
+				<video id="videoel" width="400" height="300" preload="auto"  src="../media2/slideshow720_faces.webm"></video>
+				<canvas id="overlay" width="400" height="300"></canvas>
+				<canvas id="webgl" width="400" height="300"></canvas>	
+			</div>
+			<video id="visiblevideo" width="400" height="300" preload="auto"  src="../media2/slideshow720.webm"></video>
+
 			<br/>
 			<div id="controls">
 				<input class="btn" type="button" value="wait, loading video & images" disabled="disabled" onclick="startVideo()" id="startbutton"></input>
 				<input class="btn" type="button" value="pause" onclick="stopVideo()" id="stopbutton"></input>
 				<input class="btn" type="button" value="poisson" onclick="poisson()" id="poissonbutton"></input>
-				<br>
-				<input class="btn" type="button" value="auto" onclick="startAutoVideo()" id="autobutton"></input>
+				<input class="btn" type="button" value="maskupdate" onclick="updateCurrentMask()" id="maskupdatebutton"></input>
 				<select name="mask" id="selectmask">
-					<option value="0">Average face</option>
+					<option value="0">Grab</option>
 					<option value="1">Terminator</option>
 					<option value="2">Walter</option>
 					<option value="3">Clooney</option>
@@ -54,7 +133,7 @@
 					<option value="15">Picasso</option>
 					<option value="16">Abstract (Scream)</option>
 					<option value="17">Holger</option>
-					<option value="18">Grab</option>
+					<option value="18">Average face</option>
 				</select>
 			</div>
 			<div id="text">
@@ -72,6 +151,7 @@
 				<a onclick="insertAltVideo(vid, 'freiheit.1.webm');">Freiheit.1</a><br>
 			</div>
 			<canvas id="webgl2" width="400" height="300"></canvas>
+			<img id="grab" class="masks" src="./media/picasso_drawing_crop.jpg"></img>
 			<img id="average" class="masks" src="./media/average2_crop.jpg"></img>
 			<img id="monalisa" class="masks" src="./media/joconde_crop.jpg"></img>
 			<img id="bieber" class="masks" src="./media/Justin-Bieber2_crop.jpg"></img>
@@ -90,7 +170,6 @@
 			<img id="chuck" class="masks" src="./media/chuck_crop.jpg"></img>
 			<img id="walter2" class="masks" src="./media/walter2_crop.jpg"></img>
 			<img id="holger" class="masks" src="./media/holger_crop.jpg"></img>
-			<img id="grab" class="masks" src="./media/grab.jpg"></img>
 			<script src="facesubstitution.js">
 			</script>
 		</div>

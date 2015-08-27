@@ -97,7 +97,7 @@ function scaleDown() {
 
 //////
 
-var ctrack = new clm.tracker();
+var annotrack = new clm.tracker();
 var coordinates = [];
 
 // set up file selector and variables to hold selections
@@ -134,7 +134,7 @@ if (window.File && window.FileReader && window.FileList) {
 		
 		loadImage();
 	}
-	document.getElementById('files').addEventListener('change', handleFileSelect, false);
+	//document.getElementById('files').addEventListener('change', handleFileSelect, false);
 } else {
 	alert('The File APIs are not fully supported in this browser.');
 }
@@ -457,7 +457,7 @@ function loadImage() { // HH loads file into canvas and detects
 						storeCurrent();
 					} else {
 						clear();
-						alert("Did not manage to detect position of face in this image. Please select position of face by clicking 'manually select face' and dragging a box around the face.")
+						console.log("Did not manage to detect position of face in this image. Please select position of face by clicking 'manually select face' and dragging a box around the face.")
 					}
 				}
 				img.src = e.target.result;
@@ -469,11 +469,13 @@ function loadImage() { // HH loads file into canvas and detects
 }
 
 // function to start showing images
+snapshotting = false
 takeSnapshot = function(dataURL) { // HH my function to take image from dataURL and detect
-
+				if (snapshotting == true) return
+				snapshotting = true
 				// Render thumbnail.
 				var span = document.getElementById('imageholder');
-				span.innerHTML = '<canvas id="imgcanvas"></canvas>';
+				//span.innerHTML = '<canvas id="imgcanvas"></canvas>';
 				var canvas = document.getElementById('imgcanvas')
 				var cc = canvas.getContext('2d');
 				var img = new Image();
@@ -483,18 +485,20 @@ takeSnapshot = function(dataURL) { // HH my function to take image from dataURL 
 					cc.drawImage(img,0,0,img.width, img.height);
 					
           scale = 1.0;
-					// check if parameters already exist
-					var positions = localStorage.getItem("snapshot")
+
+					// estimating parameters
+					positions = estimatePositions();
+					
+					/*if (!positions) {
+						clear()
+						localStorage.setItem("gluehland-progress", "no face");
+						return false;
+					}*/
+
+
+					
 					if (positions) {
-						positions = JSON.parse(positions);
-					} else {
-						// estimating parameters
-						positions = estimatePositions();
-						if (!positions) {
-							clear()
-							localStorage.setItem("gluehland-progress", "no face");
-							return false;
-						}
+
 						// put boundary on estimated points
 						for (var i = 0;i < positions.length;i++) {
 							if (positions[i][0][0] > img.width) {
@@ -508,28 +512,30 @@ takeSnapshot = function(dataURL) { // HH my function to take image from dataURL 
 								positions[i][0][1] = 0;
 							}
 						}
-					}
-					
-					if (positions) {
+
 						// render points
 						renderPoints(positions, img.width, img.height);
-						//storeCurrent();
 
 						// send 
 						var coords = exportToString()
 
 						localStorage.setItem("gluehland-coords", coords);
 						console.log("annotator sent coords")
+						setMode("intro")
+						changeImageAndCoords(dataURL,coords)
 
 					} else {
 						clear();
-						alert("Did not manage to detect position of face in this image. Please select position of face by clicking 'manually select face' and dragging a box around the face.")
+						console.log("Did not manage to detect position of face in this image. Please select position of face by clicking 'manually select face' and dragging a box around the face.")
+						takepicture()
 					}
+					snapshotting = false
 				}
 				img.src = dataURL;
 }
 
 window.addEventListener('storage', function(e) {  
+	console.log("receiving" + e.key)
   if (e.key == "gluehland-dataURL") {
   	console.log("annotator received dataURL")
   	takeSnapshot(e.newValue)
@@ -544,8 +550,8 @@ function estimatePositions(box) {
 	// box variable is optional
 	// returns positions
 	var skcc = document.getElementById('sketch');
-	ctrack.reset();
-	ctrack.init(pModel);
+	annotrack.reset();
+	annotrack.init(pModel);
 	
 	var positions = [];
 	var converged = false;
@@ -554,7 +560,7 @@ function estimatePositions(box) {
 	while (!converged) {
 		iteration++;
 		if (box) {
-			curpoints = ctrack.track(document.getElementById('imgcanvas'), box);
+			curpoints = annotrack.track(document.getElementById('imgcanvas'), box);
 			if (!curpoints) {
 				if (iteration > 0) {
 					curpoints = positions[positions.length-1];
@@ -567,7 +573,7 @@ function estimatePositions(box) {
 				}
 			}
 		} else {
-			curpoints = ctrack.track(document.getElementById('imgcanvas'));
+			curpoints = annotrack.track(document.getElementById('imgcanvas'));
 			if (!curpoints) {
 				console.log("There was a problem converging on a face in this image. Please try again by clicking 'manually select face' and dragging a box around the face.");
 				//alert("There was a problem converging on a face in this image. Please try again by clicking 'manually select face' and dragging a box around the face.");
@@ -693,7 +699,7 @@ function loadCSV(file) {
 	reader.onerror = function() {alert("error reading file")};
 	reader.readAsText(file.target.files[0]);
 }
-document.getElementById('loadcsv').addEventListener('change', loadCSV, false);
+//document.getElementById('loadcsv').addEventListener('change', loadCSV, false);
 
 // manual selection of faces (with jquery imgareaselect plugin)
 function selectBox() {
